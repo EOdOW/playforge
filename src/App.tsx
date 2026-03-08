@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useRef } from 'react';
+import Konva from 'konva';
 import { FieldCanvas } from './canvas/FieldCanvas';
 import { Toolbar } from './components/Toolbar';
 import { FormationPicker } from './components/FormationPicker';
@@ -11,6 +12,7 @@ import { useUIStore } from './store/uiStore';
 import { savePlay } from './utils/storage';
 
 function App() {
+  const stageRef = useRef<Konva.Stage>(null);
   const newPlay = usePlayStore((s) => s.newPlay);
   const currentPlay = usePlayStore((s) => s.currentPlay);
   const undo = usePlayStore((s) => s.undo);
@@ -69,14 +71,14 @@ function App() {
 
   return (
     <div className="h-screen flex flex-col bg-gray-100">
-      <Toolbar />
+      <Toolbar stageRef={stageRef} />
       {view === 'editor' ? (
         <>
           <main className="flex-1 overflow-hidden relative">
             <FormationPicker />
             <RoutePalette />
             <PlayerPopover />
-            <FieldCanvas />
+            <FieldCanvas ref={stageRef} />
           </main>
           <BottomBar />
         </>

@@ -1,5 +1,6 @@
 import { Stage, Layer } from 'react-konva';
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, forwardRef } from 'react';
+import Konva from 'konva';
 import { Field } from './Field';
 import { PlayerNode } from './PlayerNode';
 import { ScrimmageLine } from './ScrimmageLine';
@@ -8,7 +9,7 @@ import { usePlayStore } from '../store/playStore';
 import { useUIStore } from '../store/uiStore';
 import { FIELD_WIDTH, FIELD_HEIGHT } from '../utils/constants';
 
-export function FieldCanvas() {
+export const FieldCanvas = forwardRef<Konva.Stage>(function FieldCanvas(_, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [scale, setScale] = useState(1);
@@ -49,6 +50,7 @@ export function FieldCanvas() {
   return (
     <div ref={containerRef} className="flex-1 w-full h-full">
       <Stage
+        ref={ref}
         width={dimensions.width}
         height={dimensions.height}
         onClick={handleStageTap}
@@ -94,4 +96,4 @@ export function FieldCanvas() {
       </Stage>
     </div>
   );
-}
+});

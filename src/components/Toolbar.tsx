@@ -1,7 +1,13 @@
+import Konva from 'konva';
 import { usePlayStore } from '../store/playStore';
 import { useUIStore } from '../store/uiStore';
+import { exportAsPng, exportAsPdf } from '../utils/export';
 
-export function Toolbar() {
+interface ToolbarProps {
+  stageRef: React.RefObject<Konva.Stage | null>;
+}
+
+export function Toolbar({ stageRef }: ToolbarProps) {
   const currentPlay = usePlayStore((s) => s.currentPlay);
   const setPlayName = usePlayStore((s) => s.setPlayName);
   const undo = usePlayStore((s) => s.undo);
@@ -42,6 +48,27 @@ export function Toolbar() {
       </button>
 
       <div className="flex-1" />
+
+      <button
+        onClick={() => {
+          if (stageRef.current && currentPlay) {
+            exportAsPng(stageRef.current, currentPlay.name);
+          }
+        }}
+        className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm"
+      >
+        PNG
+      </button>
+      <button
+        onClick={() => {
+          if (stageRef.current && currentPlay) {
+            exportAsPdf(stageRef.current, currentPlay.name);
+          }
+        }}
+        className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm"
+      >
+        PDF
+      </button>
 
       <button
         onClick={undo}
