@@ -9,6 +9,7 @@ export function Toolbar() {
   const canUndo = usePlayStore((s) => s.canUndo);
   const canRedo = usePlayStore((s) => s.canRedo);
   const toggleFormationPicker = useUIStore((s) => s.toggleFormationPicker);
+  const setView = useUIStore((s) => s.setView);
 
   return (
     <header className="bg-slate-800 text-white px-4 py-2 flex items-center gap-3">
@@ -31,6 +32,13 @@ export function Toolbar() {
         className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm"
       >
         Formations
+      </button>
+
+      <button
+        onClick={() => setView('playList')}
+        className="px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded text-sm"
+      >
+        My Plays
       </button>
 
       <div className="flex-1" />

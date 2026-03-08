@@ -1,12 +1,14 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { FieldCanvas } from './canvas/FieldCanvas';
 import { Toolbar } from './components/Toolbar';
 import { FormationPicker } from './components/FormationPicker';
 import { RoutePalette } from './components/RoutePalette';
-import { BottomBar } from './components/BottomBar';
 import { PlayerPopover } from './components/PlayerPopover';
+import { BottomBar } from './components/BottomBar';
+import { PlayList } from './components/PlayList';
 import { usePlayStore } from './store/playStore';
 import { useUIStore } from './store/uiStore';
+import { savePlay } from './utils/storage';
 
 function App() {
   const newPlay = usePlayStore((s) => s.newPlay);
@@ -16,6 +18,7 @@ function App() {
   const removePlayer = usePlayStore((s) => s.removePlayer);
   const selectedPlayerId = useUIStore((s) => s.selectedPlayerId);
   const selectPlayer = useUIStore((s) => s.selectPlayer);
+  const view = useUIStore((s) => s.view);
 
   useEffect(() => {
     if (!currentPlay) {
@@ -23,8 +26,22 @@ function App() {
     }
   }, [currentPlay, newPlay]);
 
+  // Auto-save
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    if (!currentPlay) return;
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      savePlay(currentPlay);
+    }, 500);
+    return () => {
+      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    };
+  }, [currentPlay]);
+
+  // Keyboard shortcuts
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    // Don't handle if typing in an input
     if ((e.target as HTMLElement).tagName === 'INPUT') return;
 
     if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
@@ -53,13 +70,21 @@ function App() {
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       <Toolbar />
-      <main className="flex-1 overflow-hidden relative">
-        <FormationPicker />
-        <RoutePalette />
-        <PlayerPopover />
-        <FieldCanvas />
-      </main>
-      <BottomBar />
+      {view === 'editor' ? (
+        <>
+          <main className="flex-1 overflow-hidden relative">
+            <FormationPicker />
+            <RoutePalette />
+            <PlayerPopover />
+            <FieldCanvas />
+          </main>
+          <BottomBar />
+        </>
+      ) : (
+        <main className="flex-1 overflow-y-auto bg-gray-50">
+          <PlayList />
+        </main>
+      )}
     </div>
   );
 }
