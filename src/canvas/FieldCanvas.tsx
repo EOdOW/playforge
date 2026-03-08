@@ -2,6 +2,7 @@ import { Stage, Layer } from 'react-konva';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Field } from './Field';
 import { PlayerNode } from './PlayerNode';
+import { ScrimmageLine } from './ScrimmageLine';
 import { usePlayStore } from '../store/playStore';
 import { useUIStore } from '../store/uiStore';
 import { FIELD_WIDTH, FIELD_HEIGHT } from '../utils/constants';
@@ -13,6 +14,7 @@ export function FieldCanvas() {
 
   const currentPlay = usePlayStore((s) => s.currentPlay);
   const updatePlayer = usePlayStore((s) => s.updatePlayer);
+  const setScrimmageLineY = usePlayStore((s) => s.setScrimmageLineY);
   const selectedPlayerId = useUIStore((s) => s.selectedPlayerId);
   const selectPlayer = useUIStore((s) => s.selectPlayer);
 
@@ -52,6 +54,12 @@ export function FieldCanvas() {
       >
         <Layer x={offsetX} y={offsetY} scaleX={scale} scaleY={scale} name="field-layer">
           <Field />
+          {currentPlay && (
+            <ScrimmageLine
+              y={currentPlay.scrimmageLineY}
+              onDragEnd={(y) => setScrimmageLineY(y)}
+            />
+          )}
           {currentPlay?.players.map((player) => (
             <PlayerNode
               key={player.id}
