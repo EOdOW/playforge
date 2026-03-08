@@ -1,12 +1,20 @@
 import { Stage, Layer } from 'react-konva';
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { Field } from './Field';
+import { PlayerNode } from './PlayerNode';
+import { usePlayStore } from '../store/playStore';
+import { useUIStore } from '../store/uiStore';
 import { FIELD_WIDTH, FIELD_HEIGHT } from '../utils/constants';
 
 export function FieldCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [scale, setScale] = useState(1);
+
+  const currentPlay = usePlayStore((s) => s.currentPlay);
+  const updatePlayer = usePlayStore((s) => s.updatePlayer);
+  const selectedPlayerId = useUIStore((s) => s.selectedPlayerId);
+  const selectPlayer = useUIStore((s) => s.selectPlayer);
 
   const updateDimensions = useCallback(() => {
     if (containerRef.current) {
@@ -28,11 +36,31 @@ export function FieldCanvas() {
   const offsetX = (dimensions.width - FIELD_WIDTH * scale) / 2;
   const offsetY = (dimensions.height - FIELD_HEIGHT * scale) / 2;
 
+  const handleStageTap = (e: any) => {
+    if (e.target === e.target.getStage() || e.target.getParent()?.name() === 'field-layer') {
+      selectPlayer(null);
+    }
+  };
+
   return (
     <div ref={containerRef} className="flex-1 w-full h-full">
-      <Stage width={dimensions.width} height={dimensions.height}>
-        <Layer x={offsetX} y={offsetY} scaleX={scale} scaleY={scale}>
+      <Stage
+        width={dimensions.width}
+        height={dimensions.height}
+        onClick={handleStageTap}
+        onTap={handleStageTap}
+      >
+        <Layer x={offsetX} y={offsetY} scaleX={scale} scaleY={scale} name="field-layer">
           <Field />
+          {currentPlay?.players.map((player) => (
+            <PlayerNode
+              key={player.id}
+              player={player}
+              isSelected={selectedPlayerId === player.id}
+              onSelect={selectPlayer}
+              onDragEnd={(id, x, y) => updatePlayer(id, { x, y })}
+            />
+          ))}
         </Layer>
       </Stage>
     </div>
