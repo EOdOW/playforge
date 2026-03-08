@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Play, Player, Route, Point } from '../types/play';
+import { Play, Player, Route } from '../types/play';
 import { generateId } from '../utils/ids';
 
 interface HistoryEntry {
