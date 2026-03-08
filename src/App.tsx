@@ -3,6 +3,8 @@ import { FieldCanvas } from './canvas/FieldCanvas';
 import { Toolbar } from './components/Toolbar';
 import { FormationPicker } from './components/FormationPicker';
 import { RoutePalette } from './components/RoutePalette';
+import { BottomBar } from './components/BottomBar';
+import { PlayerPopover } from './components/PlayerPopover';
 import { usePlayStore } from './store/playStore';
 
 function App() {
@@ -21,8 +23,10 @@ function App() {
       <main className="flex-1 overflow-hidden relative">
         <FormationPicker />
         <RoutePalette />
+        <PlayerPopover />
         <FieldCanvas />
       </main>
+      <BottomBar />
     </div>
   );
 }
