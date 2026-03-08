@@ -3,6 +3,7 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import { Field } from './Field';
 import { PlayerNode } from './PlayerNode';
 import { ScrimmageLine } from './ScrimmageLine';
+import { RouteLine } from './RouteLine';
 import { usePlayStore } from '../store/playStore';
 import { useUIStore } from '../store/uiStore';
 import { FIELD_WIDTH, FIELD_HEIGHT } from '../utils/constants';
@@ -14,6 +15,7 @@ export function FieldCanvas() {
 
   const currentPlay = usePlayStore((s) => s.currentPlay);
   const updatePlayer = usePlayStore((s) => s.updatePlayer);
+  const updateRoute = usePlayStore((s) => s.updateRoute);
   const setScrimmageLineY = usePlayStore((s) => s.setScrimmageLineY);
   const selectedPlayerId = useUIStore((s) => s.selectedPlayerId);
   const selectPlayer = useUIStore((s) => s.selectPlayer);
@@ -60,6 +62,25 @@ export function FieldCanvas() {
               onDragEnd={(y) => setScrimmageLineY(y)}
             />
           )}
+          {currentPlay?.routes.map((route) => {
+            const player = currentPlay.players.find((p) => p.id === route.playerId);
+            if (!player) return null;
+            return (
+              <RouteLine
+                key={route.id}
+                route={route}
+                player={player}
+                isSelected={selectedPlayerId === route.playerId}
+                onControlPointDrag={(routeId, index, point) => {
+                  const r = currentPlay.routes.find((r) => r.id === routeId);
+                  if (!r) return;
+                  const newControlPoints = [...r.controlPoints];
+                  newControlPoints[index] = point;
+                  updateRoute(routeId, { controlPoints: newControlPoints });
+                }}
+              />
+            );
+          })}
           {currentPlay?.players.map((player) => (
             <PlayerNode
               key={player.id}

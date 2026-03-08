@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { FieldCanvas } from './canvas/FieldCanvas';
 import { Toolbar } from './components/Toolbar';
 import { FormationPicker } from './components/FormationPicker';
+import { RoutePalette } from './components/RoutePalette';
 import { usePlayStore } from './store/playStore';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
       <Toolbar />
       <main className="flex-1 overflow-hidden relative">
         <FormationPicker />
+        <RoutePalette />
         <FieldCanvas />
       </main>
     </div>
