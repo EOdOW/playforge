@@ -10,11 +10,13 @@ import { PlayList } from './components/PlayList';
 import { usePlayStore } from './store/playStore';
 import { useUIStore } from './store/uiStore';
 import { savePlay } from './utils/storage';
+import { decodePlayFromUrl } from './utils/sharing';
 
 function App() {
   const stageRef = useRef<Konva.Stage>(null);
   const newPlay = usePlayStore((s) => s.newPlay);
   const currentPlay = usePlayStore((s) => s.currentPlay);
+  const loadPlay = usePlayStore((s) => s.loadPlay);
   const undo = usePlayStore((s) => s.undo);
   const redo = usePlayStore((s) => s.redo);
   const removePlayer = usePlayStore((s) => s.removePlayer);
@@ -23,10 +25,18 @@ function App() {
   const view = useUIStore((s) => s.view);
 
   useEffect(() => {
-    if (!currentPlay) {
-      newPlay();
+    if (currentPlay) return;
+
+    if (window.location.hash.startsWith('#play=')) {
+      const shared = decodePlayFromUrl(window.location.hash);
+      if (shared) {
+        loadPlay(shared);
+        window.location.hash = '';
+        return;
+      }
     }
-  }, [currentPlay, newPlay]);
+    newPlay();
+  }, [currentPlay, newPlay, loadPlay]);
 
   // Auto-save
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
