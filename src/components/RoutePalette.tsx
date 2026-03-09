@@ -5,6 +5,7 @@ import { RouteTemplate } from '../types/play';
 
 export function RoutePalette() {
   const selectedPlayerId = useUIStore((s) => s.selectedPlayerId);
+  const selectPlayer = useUIStore((s) => s.selectPlayer);
   const currentPlay = usePlayStore((s) => s.currentPlay);
   const addRoute = usePlayStore((s) => s.addRoute);
 
@@ -32,6 +33,8 @@ export function RoutePalette() {
     });
   };
 
+  const close = () => selectPlayer(null);
+
   const categories = [
     { key: 'receiver', label: 'Receiver' },
     { key: 'rb', label: 'RB/FB' },
@@ -39,36 +42,39 @@ export function RoutePalette() {
   ] as const;
 
   return (
-    <div className="absolute top-12 right-4 z-50 bg-white rounded-lg shadow-xl border border-gray-200 w-52">
-      <div className="px-3 py-2 border-b border-gray-200">
-        <span className="text-sm font-medium text-gray-700">
-          Routes for {player.label}
-        </span>
-        {existingRoute && (
-          <span className="ml-2 text-xs text-gray-400">(has route)</span>
-        )}
-      </div>
-      <div className="p-2 max-h-72 overflow-y-auto">
-        {categories.map(({ key, label }) => {
-          const routes = routeTemplates.filter((r) => r.category === key);
-          return (
-            <div key={key} className="mb-2">
-              <div className="text-xs font-semibold text-gray-400 uppercase px-2 mb-1">
-                {label}
+    <>
+      <div className="fixed inset-0 z-40" onClick={close} />
+      <div className="absolute top-12 right-4 z-50 bg-white rounded-lg shadow-xl border border-gray-200 w-[calc(100vw-2rem)] max-w-52 sm:w-52 flex flex-col">
+        <div className="px-3 py-2 border-b border-gray-200">
+          <span className="text-sm font-medium text-gray-700">
+            Routes for {player.label}
+          </span>
+          {existingRoute && (
+            <span className="ml-2 text-xs text-gray-400">(has route)</span>
+          )}
+        </div>
+        <div className="p-2 max-h-[60vh] overflow-y-auto">
+          {categories.map(({ key, label }) => {
+            const routes = routeTemplates.filter((r) => r.category === key);
+            return (
+              <div key={key} className="mb-2">
+                <div className="text-xs font-semibold text-gray-400 uppercase px-2 mb-1">
+                  {label}
+                </div>
+                {routes.map((rt) => (
+                  <button
+                    key={rt.type}
+                    onClick={() => assignRoute(rt)}
+                    className="w-full text-left px-3 py-3 text-sm rounded hover:bg-gray-100 min-h-[44px]"
+                  >
+                    {rt.name}
+                  </button>
+                ))}
               </div>
-              {routes.map((rt) => (
-                <button
-                  key={rt.type}
-                  onClick={() => assignRoute(rt)}
-                  className="w-full text-left px-3 py-1.5 text-sm rounded hover:bg-gray-100"
-                >
-                  {rt.name}
-                </button>
-              ))}
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -80,7 +80,7 @@ function App() {
   }, [handleKeyDown]);
 
   return (
-    <div className="h-screen flex flex-col bg-gray-100">
+    <div className="h-screen h-[100dvh] flex flex-col bg-gray-100">
       <Toolbar stageRef={stageRef} />
       {view === 'editor' ? (
         <>

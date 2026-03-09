@@ -28,6 +28,9 @@ export function PlayerNode({ player, isSelected, onSelect, onDragEnd }: PlayerNo
         onDragEnd(player.id, e.target.x(), e.target.y());
       }}
     >
+      {/* Expanded touch target */}
+      <Circle radius={22} fill="transparent" />
+
       {/* Selection ring */}
       {isSelected && (
         <Circle

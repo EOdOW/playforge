@@ -48,7 +48,7 @@ export const FieldCanvas = forwardRef<Konva.Stage>(function FieldCanvas(_, ref) 
   };
 
   return (
-    <div ref={containerRef} className="flex-1 w-full h-full">
+    <div ref={containerRef} className="flex-1 w-full h-full touch-none">
       <Stage
         ref={ref}
         width={dimensions.width}

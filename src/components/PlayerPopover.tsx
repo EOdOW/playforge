@@ -37,7 +37,10 @@ export function PlayerPopover() {
   };
 
   return (
-    <div className="absolute bottom-14 left-1/2 -translate-x-1/2 z-50 bg-white rounded-lg shadow-xl border border-gray-200 p-3 flex items-center gap-3">
+    <div
+      className="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 bg-white rounded-lg shadow-xl border border-gray-200 p-3 flex items-center gap-3 max-w-[calc(100vw-2rem)]"
+      style={{ marginBottom: 'var(--sai-bottom)' }}
+    >
       <label className="text-xs text-gray-500">Label:</label>
       <input
         type="text"
@@ -45,19 +48,19 @@ export function PlayerPopover() {
         onChange={(e) => setLabel(e.target.value)}
         onBlur={handleLabelChange}
         onKeyDown={(e) => e.key === 'Enter' && handleLabelChange()}
-        className="border border-gray-300 rounded px-2 py-1 text-sm w-16 outline-none focus:ring-1 focus:ring-blue-400"
+        className="border border-gray-300 rounded px-2 py-1 text-sm w-16 outline-none focus:ring-1 focus:ring-blue-400 min-h-[44px]"
       />
       {route && (
         <button
           onClick={handleRemoveRoute}
-          className="px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded text-xs text-gray-600"
+          className="px-3 py-2 bg-gray-100 hover:bg-gray-200 rounded text-xs text-gray-600 min-h-[44px]"
         >
           Clear Route
         </button>
       )}
       <button
         onClick={handleDelete}
-        className="px-2 py-1 bg-red-100 hover:bg-red-200 rounded text-xs text-red-600"
+        className="px-3 py-2 bg-red-100 hover:bg-red-200 rounded text-xs text-red-600 min-h-[44px]"
       >
         Delete
       </button>
